@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SL.Application.UseCases.Interfaces;
+using SL.Application.UseCases.Interfaces.User;
 using SL.Application.UseCases.User;
 
 namespace SL.Application.Microsoft.Extensions.DependencyInjection;
@@ -14,6 +14,7 @@ public static class ApplicationCollectionExtensions
         }
 
         services.AddSingleton<IRegisterUser, RegisterUser>();
+        services.AddSingleton<IAuthUser, AuthUser>();
 
         return services;
     }

@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using SL.Application.Ports.User;
-using SL.Application.UseCases.Interfaces;
+using SL.Application.UseCases.Interfaces.User;
 using SL.Domain.Adapters;
-using System.Security.Cryptography;
 
 namespace SL.Application.UseCases.User;
 
@@ -12,7 +10,7 @@ public class RegisterUser(IUsersAdapter usersAdapter) : IRegisterUser
     private readonly IUsersAdapter _usersAdapter = usersAdapter
             ?? throw new ArgumentNullException(nameof(usersAdapter));
 
-    private readonly IPasswordHasher _passwordHasher = new PasswordHasher();
+    private readonly PasswordHasher _passwordHasher = new();
 
     public async Task ExecuteAsync(RegisterUserInput input)
     {
