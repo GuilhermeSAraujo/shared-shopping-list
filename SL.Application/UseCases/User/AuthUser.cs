@@ -16,7 +16,7 @@ public class AuthUser(IUsersAdapter usersAdapter) : IAuthUser
         ?? throw new ArgumentNullException(nameof(usersAdapter));
 
     private readonly PasswordHasher _passwordHasher = new();
-    
+
     public async Task<AuthUserOutput?> ExecuteAsync(AuthUserInput input)
     {
         ValidateEntries(input);
@@ -50,7 +50,7 @@ public class AuthUser(IUsersAdapter usersAdapter) : IAuthUser
 
     private bool ValidateCredentials(UserModel user, string password)
     {
-        var result =  _passwordHasher.VerifyHashedPassword(user.Password, password);
+        var result = _passwordHasher.VerifyHashedPassword(user.Password, password);
 
         return result == PasswordVerificationResult.Success;
     }
@@ -64,11 +64,11 @@ public class AuthUser(IUsersAdapter usersAdapter) : IAuthUser
             var key = Encoding.ASCII.GetBytes("guizinnnnnnnnho333333tokenn12345");
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { 
+                Subject = new ClaimsIdentity([
                     new Claim("id", user.Id.ToString()),
                     new Claim("email", user.Email),
                     new Claim("name", user.Name),
-                }),
+                ]),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
