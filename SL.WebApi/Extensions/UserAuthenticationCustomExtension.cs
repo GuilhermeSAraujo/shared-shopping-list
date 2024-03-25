@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -13,16 +14,18 @@ public static class UserAuthenticationCustomExtension
             .AddJwtBearer(
                 cfg =>
                 {
-                    // cfg.Authority = AuthUrl;
                     cfg.RequireHttpsMetadata = false;
-                    cfg.IncludeErrorDetails = true;
                     cfg.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                        ValidateIssuerSigningKey = false,
+                        ValidateLifetime = true,
                         ValidIssuer = AuthUrl,
-                        ValidateLifetime = true
+                        ClockSkew = TimeSpan.Zero, // Optionally, set clock skew to zero to consider the token invalid if it's expired exactly at the expiration time
+                        // Add your security key(s) for signature validation
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("guizinnnnnnnnho333333tokenn12345"))
+                        // If you are using asymmetric keys, you can use the following:
+                        // IssuerSigningKey = new X509SecurityKey(new X509Certificate2("path_to_your_certificate"))
                     };
                     cfg.Events = new JwtBearerEvents()
                     {
