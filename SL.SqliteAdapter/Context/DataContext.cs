@@ -32,7 +32,7 @@ public class DataContext
 
         async Task _initUsers()
         {
-            var sql = """
+            var sql = @"
                 CREATE TABLE IF NOT EXISTS 
                 Users (
                     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -40,7 +40,14 @@ public class DataContext
                     Email TEXT,
                     Password TEXT
                 );
-            """;
+
+                CREATE TABLE IF NOT EXISTS Lists (
+                    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    name TEXT,
+                    owner_id INTEGER,
+                    FOREIGN KEY(owner_id) REFERENCES Users(id)
+                );
+            ";
             await connection.ExecuteAsync(sql);
         }
     }

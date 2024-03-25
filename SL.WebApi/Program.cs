@@ -2,6 +2,8 @@ using SL.WebApi.Routes;
 using SL.Application.Microsoft.Extensions.DependencyInjection;
 using SL.SqliteAdapter.Context;
 using SL.SqliteAdapter.Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SL.WebApi.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +16,16 @@ builder.Services
     .AddApplication()
     .AddDataAccess();
 
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddUserAuthentication("");
+
 var app = builder.Build();
 
-// initialize db
+// initialize db - migrat
+// TODO: migrate to background service initialization
 {
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<DataContext>();
@@ -28,8 +37,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.RegisterRoutes();
 
