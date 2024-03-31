@@ -37,7 +37,7 @@ public class DataContext
                     Users (
                         Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                         Name TEXT,
-                        Email TEXT,
+                        Email TEXT UNIQUE,
                         Password TEXT
             )";
             await connection.ExecuteAsync(createUsers);
