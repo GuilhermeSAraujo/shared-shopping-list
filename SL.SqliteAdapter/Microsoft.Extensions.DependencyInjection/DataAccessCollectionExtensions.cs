@@ -16,6 +16,7 @@ public static class DataAccessCollectionExtensions
         services.AddSingleton<DataContext>();
 
         services.AddSingleton<IUsersAdapter, UsersAdapter>();
+        services.AddSingleton<IListsAdapter, ListsAdapter>();
 
         return services;
     }
