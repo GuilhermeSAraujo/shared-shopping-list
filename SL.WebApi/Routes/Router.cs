@@ -17,5 +17,6 @@ public static class Router
     {
         v1.RegisterUserRoutes();
         v1.RegisterListRoutes();
+        v1.RegisterShareRoutes();
     }
 }

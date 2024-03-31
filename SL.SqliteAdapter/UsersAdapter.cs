@@ -11,7 +11,7 @@ public class UsersAdapter(DataContext db) : IUsersAdapter
 
     public async Task CreateUser(CreateUserRequest request)
     {
-        var conn = _db.CreateConnection();
+        using var conn = _db.CreateConnection();
 
         await conn.ExecuteAsync(@"
             INSERT INTO Users (Name, Email, Password)
@@ -21,7 +21,7 @@ public class UsersAdapter(DataContext db) : IUsersAdapter
 
     public async Task<UserModel?> FindUserByEmail(string email)
     {
-        var conn = _db.CreateConnection();
+        using var conn = _db.CreateConnection();
 
         var result = await conn.QuerySingleOrDefaultAsync<UserModel>(@"
             SELECT Id, Email, Name, Password 

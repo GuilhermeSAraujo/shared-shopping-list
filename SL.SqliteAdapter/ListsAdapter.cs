@@ -1,4 +1,3 @@
-
 using Dapper;
 using SL.Domain.Adapters;
 using SL.Domain.Models.Lists;
@@ -12,7 +11,7 @@ public class ListsAdapter(DataContext db) : IListsAdapter
 
     public async Task CreateList(CreateListRequest request)
     {
-        var conn = _db.CreateConnection();
+        using var conn = _db.CreateConnection();
 
         await conn.ExecuteAsync(@"
             INSERT INTO Lists (Name, Owner_id)
@@ -22,7 +21,7 @@ public class ListsAdapter(DataContext db) : IListsAdapter
 
     public async Task<List?> Find(int listId, int ownerId)
     {
-        var conn = _db.CreateConnection();
+        using var conn = _db.CreateConnection();
 
         var result = await conn.QueryFirstOrDefaultAsync<List>(@"
             SELECT Id, Name, Owner_id AS OwnerId

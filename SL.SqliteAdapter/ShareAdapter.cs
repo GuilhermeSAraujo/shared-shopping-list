@@ -1,4 +1,4 @@
-using System.Text;
+using Dapper;
 using SL.Domain.Adapters;
 using SL.SqliteAdapter.Context;
 
@@ -9,14 +9,13 @@ public class ShareAdapter(DataContext db) : IShareAdapter
 
     public async Task Create(int listId, IEnumerable<string> emails)
     {
-        var values = new StringBuilder(@"
-            INSERT INTO Share (List_id, User_id)
-            VALUES");
+        var insert = @"
+            INSERT INTO Share (List_id, User_email)
+            VALUES (@ListId, @UserEmail)
+        ";
 
-        foreach (var email in emails)
-        {
-            values.AppendLine($"({listId}, @)");
+        using var conn = _db.CreateConnection();
 
-        }
+        await conn.ExecuteAsync(insert, emails.Select(email => new { ListId = listId, UserEmail = email }));
     }
 }

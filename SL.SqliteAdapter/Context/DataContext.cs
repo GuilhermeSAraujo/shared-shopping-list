@@ -33,13 +33,13 @@ public class DataContext
         async Task _initUsers()
         {
             const string createUsers = @"
-                CREATE TABLE IF NOT EXISTS 
-                    Users (
-                        Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                        Name TEXT,
-                        Email TEXT UNIQUE,
-                        Password TEXT
-            )";
+                CREATE TABLE IF NOT EXISTS Users (
+                    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    Name TEXT,
+                    Email TEXT UNIQUE,
+                    Password TEXT
+                )
+            ";
             await connection.ExecuteAsync(createUsers);
 
             const string createLists = @"
@@ -48,7 +48,7 @@ public class DataContext
                     Name TEXT,
                     Owner_id INTEGER,
                     FOREIGN KEY(owner_id) REFERENCES Users(id)
-                );
+                )
             ";
             await connection.ExecuteAsync(createLists);
 
@@ -56,10 +56,9 @@ public class DataContext
                 CREATE TABLE IF NOT EXISTS Share (
                     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                     List_id INTEGER,
-                    User_id INTEGER,
-                    FOREIGN KEY(List_id) REFERENCES Lists(Id),
-                    FOREIGN KEY(User_id) REFERENCES Users(Id)
-                );
+                    User_email TEXT,
+                    FOREIGN KEY(List_id) REFERENCES Lists(Id)
+                )
             ";
             await connection.ExecuteAsync(createShare);
         }
