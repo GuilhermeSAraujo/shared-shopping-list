@@ -32,7 +32,7 @@ public class DataContext
 
         async Task _initUsers()
         {
-            var createUsers = @"
+            const string createUsers = @"
                 CREATE TABLE IF NOT EXISTS 
                     Users (
                         Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -42,15 +42,26 @@ public class DataContext
             )";
             await connection.ExecuteAsync(createUsers);
 
-            var createLists = @"
+            const string createLists = @"
                 CREATE TABLE IF NOT EXISTS Lists (
                     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-                    name TEXT,
-                    owner_id INTEGER,
+                    Name TEXT,
+                    Owner_id INTEGER,
                     FOREIGN KEY(owner_id) REFERENCES Users(id)
                 );
             ";
             await connection.ExecuteAsync(createLists);
+
+            const string createShare = @"
+                CREATE TABLE IF NOT EXISTS Share (
+                    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+                    List_id INTEGER,
+                    User_id INTEGER,
+                    FOREIGN KEY(List_id) REFERENCES Lists(Id),
+                    FOREIGN KEY(User_id) REFERENCES Users(Id)
+                );
+            ";
+            await connection.ExecuteAsync(createShare);
         }
     }
 }

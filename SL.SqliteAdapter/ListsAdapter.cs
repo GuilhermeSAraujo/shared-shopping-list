@@ -15,7 +15,7 @@ public class ListsAdapter(DataContext db) : IListsAdapter
         var conn = _db.CreateConnection();
 
         await conn.ExecuteAsync(@"
-            INSERT INTO Lists (name, owner_id)
+            INSERT INTO Lists (Name, Owner_id)
             VALUES (@Name, @OwnerId)
         ", request);
     }
