@@ -16,5 +16,8 @@ public static class Router
     private static void RegisterV1Routes(RouteGroupBuilder v1)
     {
         v1.RegisterUserRoutes();
+        v1.RegisterListRoutes();
+        v1.RegisterShareRoutes();
+        v1.RegisterItemRoutes();
     }
 }
