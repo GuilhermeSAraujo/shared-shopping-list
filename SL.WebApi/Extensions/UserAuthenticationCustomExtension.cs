@@ -1,29 +1,41 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
 namespace SL.WebApi.Extensions;
-
 public static class UserAuthenticationCustomExtension
 {
-    public static AuthenticationBuilder AddUserAuthentication(this AuthenticationBuilder auth, string AuthUrl)
+    public static AuthenticationBuilder AddUserAuthentication(this AuthenticationBuilder auth)
     {
         auth
             .AddJwtBearer(
                 cfg =>
                 {
-                    // cfg.Authority = AuthUrl;
                     cfg.RequireHttpsMetadata = false;
                     cfg.IncludeErrorDetails = true;
+
+                    // Parse the JWKS and create an RsaSecurityKey
+                    var rsaParameters = new RSAParameters
+                    {
+                        Modulus = Base64UrlEncoder.DecodeBytes(Environment.GetEnvironmentVariable("JWT_MODULUS")),
+                        Exponent = Base64UrlEncoder.DecodeBytes(Environment.GetEnvironmentVariable("JWT_EXPONENT"))
+                    };
+                    var signingKey = new RsaSecurityKey(rsaParameters);
+
                     cfg.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                        ValidateIssuerSigningKey = false,
-                        ValidIssuer = AuthUrl,
-                        ValidateLifetime = true
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+                        ValidateLifetime = true,
+                        IssuerSigningKey = signingKey
                     };
+
                     cfg.Events = new JwtBearerEvents()
                     {
                         OnTokenValidated = context =>
@@ -36,9 +48,9 @@ public static class UserAuthenticationCustomExtension
                                     throw new Exception("Invalid security token");
                                 }
 
-                                var id = token.Claims.FirstOrDefault(x => x.Type.Equals("id"));
-                                var email = token.Claims.FirstOrDefault(x => x.Type.Equals("email"));
-                                var name = token.Claims.FirstOrDefault(x => x.Type.Equals("name"));
+                                var id = token.Claims.FirstOrDefault(x => x.Type.Equals("user_id"));
+                                var email = token.Claims.FirstOrDefault(x => x.Type.Equals("user_email"));
+                                var name = token.Claims.FirstOrDefault(x => x.Type.Equals("user_full_name"));
 
                                 if (id is null || email is null || name is null)
                                 {

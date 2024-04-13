@@ -16,13 +16,21 @@ builder.Services
     .AddApplication()
     .AddDataAccess();
 
+builder.Services.AddCors();
+
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddUserAuthentication("");
+}).AddUserAuthentication();
+
 
 var app = builder.Build();
+
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 // initialize db - migrat
 // TODO: migrate to background service initialization
